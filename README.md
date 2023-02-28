@@ -16,5 +16,5 @@ This datasource is theGraph's subgraph where we store all our blockchain data. F
 Make a copy of .env.sample, name it as .env and add the desired config. Run the following command
 
 ```bash
-./run_local_docker.sh
+./run_docker.sh
 ```
