@@ -1,0 +1,29 @@
+{
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black",
+  "[solidity]": {
+    "editor.defaultFormatter": "JuanBlanco.solidity"
+  },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "python.linting.mypyEnabled": true,
+  "python.envFile": "${workspaceRoot}/.env",
+  "solidity.remappings": [
+    "@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.3.2"
+  ],
+  "solidity.packageDefaultDependenciesContractsDirectory": "app/buffer-contracts-v6",
+  "solidity.compileUsingRemoteVersion": "0.8.4",
+  "solidity.enabledAsYouTypeCompilationErrorCheck": true,
+  "solidity.packageDefaultDependenciesDirectory": "app/buffer-contracts/node_modules",
+  "jupyter.jupyterServerType": "remote",
+  "editor.inlineSuggest.enabled": true,
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": true,
+    "markdown": false,
+    "properties": false
+  },
+  "github.copilot.advanced": {}
+}

@@ -1,0 +1,7 @@
+pipe==2.0
+# git+https://github.com/bufferfinance/brownie.git#egg=eth-brownie
+eth-brownie==1.19.1
+sentry-sdk==1.11.0
+# grequests
+diskcache
+newrelic
