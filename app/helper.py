@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 open_keeper_account = accounts.add(os.environ["OPEN_KEEPER_ACCOUNT_PK"])
 close_keeper_account = accounts.add(os.environ["CLOSE_KEEPER_ACCOUNT_PK"])
 
-MAX_BATCH_SIZE = 50
+MAX_BATCH_SIZE = 100
 
 
 def get_queue_ids_from_graph(json_data, endpoint):
@@ -80,7 +80,7 @@ def fetch_prices(prices_to_fetch):
         else:
             uncached_prices_to_fetch.append(x)
 
-    reqUrl = "https://oracle.buffer.finance/price/query/"
+    reqUrl = "https://oracle.buffer-finance-api.link/price/query/"
 
     fetched_prices = []
     if uncached_prices_to_fetch:
@@ -241,20 +241,20 @@ def _unlock_options(expired_options, environment):
     if unlock_payload:
         logger.info(f"unlock_payload: {_(unlock_payload)}")
         router = get_router_contract(config.ROUTER[environment])
+        params = {
+            "from": close_keeper_account,
+            "gas": config.GAS_PRICE[environment],
+            "required_confs": int(os.environ["CONFS"]),
+            "max_fee": (2 * brownie.chain.base_fee) + brownie.chain.priority_fee,
+            "priority_fee": brownie.chain.priority_fee,
+            "allow_revert": True,
+        }
+        gas = router.unlockOptions.estimate_gas(unlock_payload, params)
+        print(gas)
         try:
             router.unlockOptions(
                 unlock_payload,
-                {
-                    "from": close_keeper_account,
-                    "gas": config.GAS_PRICE[environment],
-                    "required_confs": int(os.environ["CONFS"]),
-                    "max_fee": (2 * brownie.chain.base_fee)
-                    + brownie.chain.priority_fee,
-                    "priority_fee": brownie.chain.priority_fee,
-                    "allow_revert": True,
-                    "gas_limit": len(unlock_payload)
-                    * config.GAS_LIMIT_PER_TXN[environment],
-                },
+                {**params, "gas_limit": gas},
             )
             check_wallet(close_keeper_account)
         except Exception as e:
@@ -348,20 +348,20 @@ def _resolve_queued_trades(_queue_ids, environment):
     if unresolved_trades:
         logger.info(f"resolve payload: {_(unresolved_trades)}")
         router_contract = get_router_contract(config.ROUTER[environment])
+        params = {
+            "from": open_keeper_account,
+            "gas": config.GAS_PRICE[environment],
+            "required_confs": int(os.environ["CONFS"]),
+            "allow_revert": True,
+            "max_fee": (2 * brownie.chain.base_fee) + brownie.chain.priority_fee,
+            "priority_fee": brownie.chain.priority_fee,
+        }
+        gas = router_contract.resolveQueuedTrades.estimate_gas(
+            unresolved_trades, params
+        )
         try:
             router_contract.resolveQueuedTrades(
-                unresolved_trades,
-                {
-                    "from": open_keeper_account,
-                    "gas": config.GAS_PRICE[environment],
-                    "required_confs": int(os.environ["CONFS"]),
-                    "allow_revert": True,
-                    "max_fee": (2 * brownie.chain.base_fee)
-                    + brownie.chain.priority_fee,
-                    "priority_fee": brownie.chain.priority_fee,
-                    "gas_limit": len(unresolved_trades)
-                    * config.GAS_LIMIT_PER_TXN[environment],
-                },
+                unresolved_trades, {**params, "gas_limit": gas}
             )
             check_wallet(open_keeper_account)
         except Exception as e:
@@ -374,7 +374,7 @@ def _resolve_queued_trades(_queue_ids, environment):
 def resolve_queued_trades_v2(environment):
     logger.info(f"{datetime.now()}")
     json_data = {
-        "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: desc\n    where: {state_in: [4, 5, 6]}\n  ) {\n    queueID\n  state\n}\n}",
+        "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: desc\n    where: {state_in: [4, 5, 6]}\n  first: 1000\n) {\n    queueID\n  state\n}\n}",
         "variables": None,
         "operationName": "MyQuery",
         "extensions": {

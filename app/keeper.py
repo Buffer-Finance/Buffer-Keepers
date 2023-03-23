@@ -39,7 +39,7 @@ def open_v2(environment):
             else:
                 logger.exception(e)
             time.sleep(int(os.environ["WAIT_TIME"]))
-        time.sleep(1)
+        time.sleep(int(os.environ["DELAY"]))
 
 
 def close_v2(environment):
@@ -55,7 +55,7 @@ def close_v2(environment):
             else:
                 logger.exception(e)
             time.sleep(int(os.environ["WAIT_TIME"]))
-        time.sleep(1)
+        time.sleep(int(os.environ["DELAY"]))
 
 
 if __name__ == "__main__":

@@ -42,7 +42,7 @@ GAS_PRICE = {
 GAS_LIMIT_PER_TXN = {
     "arb-sandbox": 10_000_000,
     "arb-testnet": 10_000_000,
-    "arb-mainnet": 5_000_000,
+    "arb-mainnet": 15_000_000,
     "polygon-testnet": 5_000_000,
     "polygon-mainnet": 5_000_000,
 }
