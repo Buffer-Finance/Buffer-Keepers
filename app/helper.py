@@ -1,5 +1,6 @@
 import json
 import logging
+import multiprocessing as mp
 import os
 import time
 from datetime import datetime
@@ -359,6 +360,7 @@ def _resolve_queued_trades(_queue_ids, environment):
         gas = router_contract.resolveQueuedTrades.estimate_gas(
             unresolved_trades, params
         )
+        logger.info(f"Transacting at {gas} gas units")
         try:
             router_contract.resolveQueuedTrades(
                 unresolved_trades, {**params, "gas_limit": gas}
@@ -372,7 +374,7 @@ def _resolve_queued_trades(_queue_ids, environment):
 
 
 def resolve_queued_trades_v2(environment):
-    logger.info(f"{datetime.now()}")
+    logger.info(f"{mp.current_process().name} {datetime.now()}")
     json_data = {
         "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: desc\n    where: {state_in: [4, 5, 6]}\n  first: 1000\n) {\n    queueID\n  state\n}\n}",
         "variables": None,
@@ -399,7 +401,7 @@ def resolve_queued_trades_v2(environment):
 
 
 def unlock_options_v2(environment):
-    logger.info(f"{datetime.now()}")
+    logger.info(f"{mp.current_process().name} {datetime.now()}")
     limit = 1000
 
     json_data = {
