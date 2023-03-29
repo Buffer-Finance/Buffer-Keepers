@@ -1,8 +1,11 @@
 import argparse
 import json
 import logging
+import multiprocessing as mp
 import os
+import threading
 import time
+from multiprocessing import Process
 from pprint import pprint
 
 import brownie
@@ -25,6 +28,32 @@ parser.add_argument(
     "--bot",
     type=str,
 )
+environment = os.environ["ENVIRONMENT"]
+
+
+def create_process(target, name):
+    process = Process(name=name, target=target, args=(environment,))
+    # start the new process
+    process.start()
+    # wait for the new process to finish
+    process.join()
+
+
+def excepthook(args):
+    current_process = mp.current_process().name
+    logger.info(f"Execption occured in {current_process}")
+    counter = int(current_process.split("-")[1]) + 1
+
+    # # create a new process with the same config
+    if "Open" in current_process:
+        logger.info(f"Restarting open bot...")
+        create_process(open_v2, f"OpenTask-{counter}")
+    elif "Close" in current_process:
+        logger.info(f"Restarting close bot...")
+        create_process(close_v2, f"CloseTask-{counter}")
+
+
+threading.excepthook = excepthook
 
 
 def open_v2(environment):
@@ -65,9 +94,8 @@ if __name__ == "__main__":
     logger.info(f"connected {network.show_active()}")
     # brownie.multicall(address=MULTICALL[chain])
 
-    environment = os.environ["ENVIRONMENT"]
-
     if args.bot == "open":
-        open_v2(environment)
+        create_process(open_v2, "OpenTask-1")
+
     elif args.bot == "close":
-        close_v2(environment)
+        create_process(close_v2, "CloseTask-1")
