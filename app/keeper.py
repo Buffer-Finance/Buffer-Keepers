@@ -29,6 +29,18 @@ parser.add_argument(
     type=str,
 )
 environment = os.environ["ENVIRONMENT"]
+available_networks = os.environ["NETWORK"].split(",")
+current_network_index = 0
+
+
+def switch_network():
+    global current_network_index
+    current_network_index = (current_network_index + 1) % len(available_networks)
+
+    logger.info(f"Disconnecting {network.show_active()}...")
+    network.disconnect()
+    logger.info(f"Connecting to {available_networks[current_network_index]}...")
+    network.connect(available_networks[current_network_index])
 
 
 def create_process(target, name):
@@ -67,6 +79,9 @@ def open_v2(environment):
                 logger.info(f"Handled rpc error {e}")
             else:
                 logger.exception(e)
+                switch_network()
+                logger.info(f"connected {network.show_active()}")
+
             time.sleep(int(os.environ["WAIT_TIME"]))
         time.sleep(int(os.environ["DELAY"]))
 
@@ -83,14 +98,16 @@ def close_v2(environment):
                 logger.info(f"Handled rpc error {e}")
             else:
                 logger.exception(e)
+                switch_network()
+                logger.info(f"connected {network.show_active()}")
+
             time.sleep(int(os.environ["WAIT_TIME"]))
         time.sleep(int(os.environ["DELAY"]))
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
-
-    network.connect(os.environ["NETWORK"])
+    network.connect(available_networks[current_network_index])
     logger.info(f"connected {network.show_active()}")
     # brownie.multicall(address=MULTICALL[chain])
 

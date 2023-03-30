@@ -23,14 +23,17 @@ logging.basicConfig(level=logging.INFO)
 
 
 if __name__ == "__main__":
-    cmd = [
-        "brownie",
-        "networks",
-        "add",
-        os.environ["CHAIN_NAME"],
-        os.environ["NETWORK"],
-        f"host={os.environ['RPC']}",
-        f"chainid={os.environ['CHAIN_ID']}",
-        f"explorer={os.environ['EXPLORER']}",
-    ]
-    subprocess.run(cmd)
+    rpcs = os.environ["RPC"].split(",")
+    networks = os.environ["NETWORK"].split(",")
+    for index, rpc in enumerate(rpcs):
+        cmd = [
+            "brownie",
+            "networks",
+            "add",
+            os.environ["CHAIN_NAME"],
+            networks[index],
+            f"host={rpc}",
+            f"chainid={os.environ['CHAIN_ID']}",
+            f"explorer={os.environ['EXPLORER']}",
+        ]
+        subprocess.run(cmd)
