@@ -250,8 +250,9 @@ def _unlock_options(expired_options, environment):
             "priority_fee": brownie.chain.priority_fee,
             "allow_revert": True,
         }
-        gas = router.unlockOptions.estimate_gas(unlock_payload, params)
-        print(gas)
+        gas = router.unlockOptions.estimate_gas(unlock_payload, params) * 1.01
+
+        logger.info(f"Transacting at {gas} gas units...")
         try:
             router.unlockOptions(
                 unlock_payload,
@@ -357,10 +358,11 @@ def _resolve_queued_trades(_queue_ids, environment):
             "max_fee": (2 * brownie.chain.base_fee) + brownie.chain.priority_fee,
             "priority_fee": brownie.chain.priority_fee,
         }
-        gas = router_contract.resolveQueuedTrades.estimate_gas(
-            unresolved_trades, params
+        gas = (
+            router_contract.resolveQueuedTrades.estimate_gas(unresolved_trades, params)
+            * 1.01
         )
-        logger.info(f"Transacting at {gas} gas units")
+        logger.info(f"Transacting at {gas}  gas units...")
         try:
             router_contract.resolveQueuedTrades(
                 unresolved_trades, {**params, "gas_limit": gas}
