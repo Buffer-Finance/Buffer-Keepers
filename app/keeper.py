@@ -77,6 +77,8 @@ def open_v2(environment):
                 logger.info(f"Handled rpc error {e}")
             elif "unsupported block number" in str(e):
                 logger.info(f"Handled rpc error {e}")
+            elif "oracle.buffer-finance-api.link" in str(e):
+                logger.exception(e)
             else:
                 logger.exception(e)
                 switch_network()
@@ -96,6 +98,8 @@ def close_v2(environment):
                 logger.info("Handled rpc error")
             elif "unsupported block number" in str(e):
                 logger.info(f"Handled rpc error {e}")
+            elif "oracle.buffer-finance-api.link" in str(e):
+                logger.exception(e)
             else:
                 logger.exception(e)
                 switch_network()
