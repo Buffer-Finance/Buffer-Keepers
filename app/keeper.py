@@ -80,7 +80,7 @@ def open_v2(environment):
             elif "oracle.buffer-finance-api.link" in str(e):
                 logger.exception(e)
             else:
-                logger.exception(e)
+                # logger.exception(e)
                 switch_network()
                 logger.info(f"connected {network.show_active()}")
 
@@ -101,7 +101,7 @@ def close_v2(environment):
             elif "oracle.buffer-finance-api.link" in str(e):
                 logger.exception(e)
             else:
-                logger.exception(e)
+                # logger.exception(e)
                 switch_network()
                 logger.info(f"connected {network.show_active()}")
 
