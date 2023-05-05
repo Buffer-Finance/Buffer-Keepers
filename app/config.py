@@ -1,6 +1,6 @@
 ROUTER = {
-    "arb-sandbox": "0x76c52E83d7dcCc70107a66BAd44D042D22D06be7",
-    "arb-testnet": "0x76c52E83d7dcCc70107a66BAd44D042D22D06be7",
+    "arb-sandbox": "0x5f4290FaB47efC67882f62dFf6C6D46655F644Ac",
+    "arb-testnet": "0x5f4290FaB47efC67882f62dFf6C6D46655F644Ac",
     "arb-mainnet": "0x0e0A1241C9cE6649d5D30134a194BA3E24130305",
     "polygon-testnet": "0x3E8d70286567bf962261a81Da5DBDe6cBbc444C4",
     "polygon-mainnet": "0xBBac5088Ea7E70f21C28058A434Afa64FDf401c7",
@@ -15,16 +15,16 @@ MULTICALL = {
 }
 
 KEEPER_READER = {
-    "arb-sandbox": "0x8c2015A994ac631f907c418Cc5703D529c6527fB",
-    "arb-testnet": "0x8c2015A994ac631f907c418Cc5703D529c6527fB",
+    "arb-sandbox": "0xb06cBAF4C0b6ee728FD921747a2a55B46683886e",
+    "arb-testnet": "0xb06cBAF4C0b6ee728FD921747a2a55B46683886e",
     "arb-mainnet": "0x222dA3977E4d876DB75b0Ef48B8148A2223c80Ed",
     "polygon-testnet": "0x5e7a2524f8809fdf743acbc6fe642bb39216c3fd",
     "polygon-mainnet": "0xF91E17072353200F7bA0b7cF8F644893680e7f90",
 }
 
 GRAPH_ENDPOINT = {
-    "arb-sandbox": "https://api.thegraph.com/subgraphs/name/bufferfinance/sandbox-lite",
-    "arb-testnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/testnet-lite",
+    "arb-sandbox": "https://api.thegraph.com/subgraphs/name/buffertech/no-loss-arbitrum-testnet",
+    "arb-testnet": "https://api.thegraph.com/subgraphs/name/buffertech/no-loss-arbitrum-testnet",
     "arb-mainnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite",
     "polygon-sandbox": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-test-lite",
     "polygon-mainnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-mainnet-lite",
