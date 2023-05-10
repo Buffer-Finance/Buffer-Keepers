@@ -23,8 +23,8 @@ KEEPER_READER = {
 }
 
 GRAPH_ENDPOINT = {
-    "arb-sandbox": "https://api.thegraph.com/subgraphs/name/buffertech/no-loss-arbitrum-testnet",
-    "arb-testnet": "https://api.thegraph.com/subgraphs/name/buffertech/no-loss-arbitrum-testnet",
+    "arb-sandbox": "https://api.thegraph.com/subgraphs/name/buffertech/instant-trading-arbitrum-test/",
+    "arb-testnet": "https://api.thegraph.com/subgraphs/name/buffertech/instant-trading-arbitrum-test/",
     "arb-mainnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite",
     "polygon-sandbox": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-test-lite",
     "polygon-mainnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-mainnet-lite",
