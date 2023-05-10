@@ -1,6 +1,6 @@
 ROUTER = {
-    "arb-sandbox": "0x5f4290FaB47efC67882f62dFf6C6D46655F644Ac",
-    "arb-testnet": "0x5f4290FaB47efC67882f62dFf6C6D46655F644Ac",
+    "arb-sandbox": "0x2Acf434D53B6427d450Ae44563820f9714B5d776",
+    "arb-testnet": "0x2Acf434D53B6427d450Ae44563820f9714B5d776",
     "arb-mainnet": "0x0e0A1241C9cE6649d5D30134a194BA3E24130305",
     "polygon-testnet": "0x3E8d70286567bf962261a81Da5DBDe6cBbc444C4",
     "polygon-mainnet": "0xBBac5088Ea7E70f21C28058A434Afa64FDf401c7",
@@ -15,8 +15,8 @@ MULTICALL = {
 }
 
 KEEPER_READER = {
-    "arb-sandbox": "0xb06cBAF4C0b6ee728FD921747a2a55B46683886e",
-    "arb-testnet": "0xb06cBAF4C0b6ee728FD921747a2a55B46683886e",
+    "arb-sandbox": "0xA2bF48143ea31c0488a1cA01EC33bF275D865614",
+    "arb-testnet": "0xA2bF48143ea31c0488a1cA01EC33bF275D865614",
     "arb-mainnet": "0x222dA3977E4d876DB75b0Ef48B8148A2223c80Ed",
     "polygon-testnet": "0x5e7a2524f8809fdf743acbc6fe642bb39216c3fd",
     "polygon-mainnet": "0xF91E17072353200F7bA0b7cF8F644893680e7f90",
