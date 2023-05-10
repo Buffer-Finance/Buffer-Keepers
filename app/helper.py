@@ -393,8 +393,7 @@ def resolve_queued_trades_v2(environment):
         )
         queuedOptionDatas = response["queuedOptionDatas"]
     except Exception as e:
-        # logger.info(f"Error fetching from theGraph")
-        pass
+        logger.info(f"Error fetching from theGraph")
 
     _resolve_queued_trades(
         queuedOptionDatas,
