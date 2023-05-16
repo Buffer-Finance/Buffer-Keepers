@@ -15,8 +15,8 @@ MULTICALL = {
 }
 
 KEEPER_READER = {
-    "arb-sandbox": "0xeCDaF4c407609a618416109afD98D9cC1399Eadd",
-    "arb-testnet": "0xeCDaF4c407609a618416109afD98D9cC1399Eadd",
+    "arb-sandbox": "0xb107965C0e6eC13dAF7a4A58a3cF25ff8dc92aEe",
+    "arb-testnet": "0xb107965C0e6eC13dAF7a4A58a3cF25ff8dc92aEe",
     "arb-mainnet": "0x222dA3977E4d876DB75b0Ef48B8148A2223c80Ed",
     "polygon-testnet": "0x5e7a2524f8809fdf743acbc6fe642bb39216c3fd",
     "polygon-mainnet": "0xF91E17072353200F7bA0b7cF8F644893680e7f90",
