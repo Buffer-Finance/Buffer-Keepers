@@ -23,12 +23,12 @@ KEEPER_READER = {
 }
 
 GRAPH_ENDPOINT = {
-    "arb-sandbox": "https://api.thegraph.com/subgraphs/name/bufferfinance/sandbox-lite",
-    "arb-testnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/testnet-lite",
+    "arb-sandbox": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/arbitrum-testnet/api",
+    "arb-testnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/arbitrum-testnet/api",
     "arb-mainnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/mainnet-lite",
-    "polygon-sandbox": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-test-lite",
+    "polygon-sandbox": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/polygon-testnet/api",
     "polygon-mainnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-mainnet-lite",
-    "polygon-testnet": "https://api.thegraph.com/subgraphs/name/bufferfinance/polygon-test-lite",
+    "polygon-testnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/polygon-testnet/api",
 }
 
 GAS_PRICE = {
