@@ -4,6 +4,7 @@ import multiprocessing as mp
 import os
 import time
 from datetime import datetime
+from pprint import pprint
 
 import brownie
 import config
@@ -24,7 +25,6 @@ MAX_BATCH_SIZE = 100
 
 
 def get_queue_ids_from_graph(json_data, endpoint):
-
     response = requests.post(
         endpoint,
         json=json_data,
@@ -35,7 +35,6 @@ def get_queue_ids_from_graph(json_data, endpoint):
 
 
 def get_option_ids_to_unlock_from_graph(json_data, endpoint):
-
     response = requests.post(
         endpoint,
         json=json_data,
@@ -180,7 +179,6 @@ def _unlock_options(expired_options, environment):
     brownie.multicall(address=config.MULTICALL[environment])
 
     with brownie.multicall:
-
         # Confirm if these options are still active by using RPC calls
         expired_options = list(
             expired_options
@@ -254,10 +252,31 @@ def _unlock_options(expired_options, environment):
 
         logger.info(f"Transacting at {gas} gas units...")
         try:
-            router.unlockOptions(
+            tx = router.unlockOptions(
                 unlock_payload,
-                {**params, "gas_limit": gas},
+                {**params, "gas_limit": gas * 2},
             )
+            # if (
+            #     "FailUnlock" in tx.events
+            #     and "SafeERC20: low-level call failed"
+            #     in tx.events["FailUnlock"]["reason"]
+            # ):
+            #     pprint(tx.events["FailUnlock"])
+            #     time.sleep(10)
+            # tx = router.unlockOptions(
+            #     unlock_payload,
+            #     {
+            #         "from": close_keeper_account,
+            #         "gas": config.GAS_PRICE[environment],
+            #         "required_confs": int(os.environ["CONFS"]),
+            #         "max_fee": (2 * brownie.chain.base_fee)
+            #         + brownie.chain.priority_fee,
+            #         "priority_fee": brownie.chain.priority_fee,
+            #         "allow_revert": True,
+            #         "gas_limit": gas * 2,
+            #     },
+            # )
+
             check_wallet(close_keeper_account)
         except Exception as e:
             if "nonce too low" in str(e):

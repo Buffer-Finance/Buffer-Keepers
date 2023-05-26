@@ -1,6 +1,6 @@
 {
   "editor.formatOnSave": true,
-  "python.formatting.provider": "black",
+  "python.formatting.provider": "none",
   "[solidity]": {
     "editor.defaultFormatter": "JuanBlanco.solidity"
   },
@@ -25,5 +25,8 @@
     "markdown": false,
     "properties": false
   },
-  "github.copilot.advanced": {}
+  "github.copilot.advanced": {},
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
