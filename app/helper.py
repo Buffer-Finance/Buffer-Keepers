@@ -28,6 +28,7 @@ def get_queue_ids_from_graph(json_data, endpoint):
     response = requests.post(
         endpoint,
         json=json_data,
+        headers={"Origin": "open-keeper"},
     )
 
     response.raise_for_status()
@@ -38,6 +39,7 @@ def get_option_ids_to_unlock_from_graph(json_data, endpoint):
     response = requests.post(
         endpoint,
         json=json_data,
+        headers={"Origin": "close-keeper"},
     )
 
     response.raise_for_status()
