@@ -15,7 +15,7 @@ from brownie import Contract, accounts, network
 from config import MULTICALL
 
 # from keeper_helper import resolve_queued_trades_v1, unlock_options_v1
-from helper import resolve_queued_trades_v2, unlock_options_v2
+from helper import open_limit_orders, unlock_options_v2, update_db_after_unlock
 from pipe import chain, dedup, select, where
 
 logger = logging.getLogger(__name__)
@@ -69,26 +69,29 @@ threading.excepthook = excepthook
 
 
 def open_v2(environment):
-    while True:
-        try:
-            resolve_queued_trades_v2(environment)
-        except Exception as e:
-            if "429" in str(e):
-                logger.info(f"Handled rpc error {e}")
-            elif "unsupported block number" in str(e):
-                logger.info(f"Handled rpc error {e}")
-            elif "oracle.buffer-finance-api.link" in str(e):
-                logger.exception(e)
-            else:
-                # logger.exception(e)
-                switch_network()
-                logger.info(f"connected {network.show_active()}")
+    pass
+    # while True:
+    # try:
+    # resolve_queued_trades_v2(environment)
+    # except Exception as e:
+    #     if "429" in str(e):
+    #         logger.info(f"Handled rpc error {e}")
+    #     elif "unsupported block number" in str(e):
+    #         logger.info(f"Handled rpc error {e}")
+    #     elif "oracle.buffer-finance-api.link" in str(e):
+    #         logger.exception(e)
+    #     else:
+    #         # logger.exception(e)
+    #         switch_network()
+    #         logger.info(f"connected {network.show_active()}")
 
-            time.sleep(int(os.environ["WAIT_TIME"]))
-        time.sleep(int(os.environ["DELAY"]))
+    #     time.sleep(int(os.environ["WAIT_TIME"]))
+    # time.sleep(int(os.environ["DELAY"]))
 
 
 def close_v2(environment):
+    # update_db_after_unlock(environment)
+
     while True:
         # logger.info("ping")
         try:
@@ -98,15 +101,62 @@ def close_v2(environment):
                 logger.info("Handled rpc error")
             elif "unsupported block number" in str(e):
                 logger.info(f"Handled rpc error {e}")
-            elif "oracle.buffer-finance-api.link" in str(e):
-                logger.exception(e)
+            # elif "oracle.buffer-finance-api.link" in str(e):
+            #     logger.exception(e)
             else:
-                # logger.exception(e)
-                switch_network()
-                logger.info(f"connected {network.show_active()}")
+                logger.exception(e)
+                # switch_network()
+                # logger.info(f"connected {network.show_active()}")
 
             time.sleep(int(os.environ["WAIT_TIME"]))
         time.sleep(int(os.environ["DELAY"]))
+
+
+def update_db(environment):
+
+    while True:
+        # logger.info("ping")
+        try:
+            update_db_after_unlock(environment)
+        except Exception as e:
+            if "429" in str(e):
+                logger.info("Handled rpc error")
+            elif "unsupported block number" in str(e):
+                logger.info(f"Handled rpc error {e}")
+            # elif "oracle.buffer-finance-api.link" in str(e):
+            #     logger.exception(e)
+            else:
+                logger.exception(e)
+                # switch_network()
+                # logger.info(f"connected {network.show_active()}")
+
+            time.sleep(int(os.environ["WAIT_TIME"]))
+        time.sleep(int(os.environ["DELAY"]))
+
+
+def open_orders(environment):
+    while True:
+        # logger.info("ping")
+        try:
+            open_limit_orders(environment)
+        except Exception as e:
+            if "429" in str(e):
+                logger.info("Handled rpc error")
+            elif "unsupported block number" in str(e):
+                logger.info(f"Handled rpc error {e}")
+            # elif "oracle.buffer-finance-api.link" in str(e):
+            #     logger.exception(e)
+            else:
+                logger.exception(e)
+                # switch_network()
+                # logger.info(f"connected {network.show_active()}")
+
+            time.sleep(int(os.environ["WAIT_TIME"]))
+        time.sleep(int(os.environ["DELAY"]))
+
+
+def cancel(environment):
+    pass
 
 
 if __name__ == "__main__":
@@ -115,8 +165,17 @@ if __name__ == "__main__":
     logger.info(f"connected {network.show_active()}")
     # brownie.multicall(address=MULTICALL[chain])
 
-    if args.bot == "open":
-        create_process(open_v2, "OpenTask-1")
-
-    elif args.bot == "close":
+    if args.bot == "close":
         create_process(close_v2, "CloseTask-1")
+
+    elif args.bot == "update":
+        create_process(update_db, "UpdateTask-1")
+
+    # elif args.bot == "open":
+    #     create_process(open_v2, "OpenTask-1")
+
+    elif args.bot == "open_limit_order":
+        create_process(open_orders, "OpenLimitOrderTask-1")
+
+    # elif args.bot == "cancel":
+    #     create_process(cancel, "CancelTask-1")

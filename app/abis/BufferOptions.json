@@ -28,7 +28,12 @@
             },
             {
                 "internalType": "string",
-                "name": "_assetPair",
+                "name": "_token0",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_token1",
                 "type": "string"
             }
         ],
@@ -120,6 +125,49 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "address",
+                "name": "config",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "tokenX",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "token0",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "token1",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint8[4]",
+                "name": "nftTiersStep",
+                "type": "uint8[4]"
+            }
+        ],
+        "name": "CreateOptionsContract",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "account",
@@ -142,6 +190,12 @@
                 "internalType": "uint256",
                 "name": "priceAtExpiration",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "isAbove",
+                "type": "bool"
             }
         ],
         "name": "Exercise",
@@ -167,6 +221,12 @@
                 "internalType": "uint256",
                 "name": "priceAtExpiration",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "isAbove",
+                "type": "bool"
             }
         ],
         "name": "Expire",
@@ -291,6 +351,12 @@
             {
                 "indexed": false,
                 "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
                 "name": "referrer",
                 "type": "address"
             },
@@ -331,6 +397,19 @@
     {
         "inputs": [],
         "name": "DEFAULT_ADMIN_ROLE",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PAUSER_ROLE",
         "outputs": [
             {
                 "internalType": "bytes32",
@@ -460,108 +539,6 @@
     },
     {
         "inputs": [],
-        "name": "baseSettlementFeePercentageForAbove",
-        "outputs": [
-            {
-                "internalType": "uint16",
-                "name": "",
-                "type": "uint16"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "baseSettlementFeePercentageForBelow",
-        "outputs": [
-            {
-                "internalType": "uint16",
-                "name": "",
-                "type": "uint16"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "strike",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "period",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "isAbove",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "allowPartialFill",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "totalFee",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "user",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "referralCode",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "traderNFTId",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct IBufferBinaryOptions.OptionParams",
-                "name": "optionParams",
-                "type": "tuple"
-            }
-        ],
-        "name": "checkParams",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "revisedFee",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "isReferralValid",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "name": "config",
         "outputs": [
             {
@@ -576,29 +553,6 @@
     {
         "inputs": [
             {
-                "internalType": "uint16",
-                "name": "_baseSettlementFeePercentageForAbove",
-                "type": "uint16"
-            },
-            {
-                "internalType": "uint16",
-                "name": "_baseSettlementFeePercentageForBelow",
-                "type": "uint16"
-            },
-            {
-                "internalType": "uint8[4]",
-                "name": "_nftTierStep",
-                "type": "uint8[4]"
-            }
-        ],
-        "name": "configure",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "components": [
                     {
                         "internalType": "uint256",
@@ -614,11 +568,6 @@
                         "internalType": "uint256",
                         "name": "period",
                         "type": "uint256"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "isAbove",
-                        "type": "bool"
                     },
                     {
                         "internalType": "bool",
@@ -644,6 +593,11 @@
                         "internalType": "uint256",
                         "name": "traderNFTId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "baseSettlementFeePercentage",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct IBufferBinaryOptions.OptionParams",
@@ -654,6 +608,11 @@
                 "internalType": "bool",
                 "name": "isReferralValid",
                 "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "queuedTime",
+                "type": "uint256"
             }
         ],
         "name": "createFromRouter",
@@ -683,6 +642,87 @@
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "strike",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "period",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "allowPartialFill",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "totalFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "referralCode",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "traderNFTId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "baseSettlementFeePercentage",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct IBufferBinaryOptions.OptionParams",
+                "name": "optionParams",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slippage",
+                "type": "uint256"
+            }
+        ],
+        "name": "evaluateParams",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "revisedFee",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "isReferralValid",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
@@ -693,11 +733,6 @@
                 "type": "address"
             },
             {
-                "internalType": "bool",
-                "name": "isAbove",
-                "type": "bool"
-            },
-            {
                 "internalType": "string",
                 "name": "referralCode",
                 "type": "string"
@@ -705,6 +740,11 @@
             {
                 "internalType": "uint256",
                 "name": "traderNFTId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "baseSettlementFeePercentage",
                 "type": "uint256"
             }
         ],
@@ -750,11 +790,11 @@
     },
     {
         "inputs": [],
-        "name": "getMaxUtilization",
+        "name": "getMaxOI",
         "outputs": [
             {
                 "internalType": "uint256",
-                "name": "maxAmount",
+                "name": "",
                 "type": "uint256"
             }
         ],
@@ -775,6 +815,45 @@
                 "internalType": "bytes32",
                 "name": "",
                 "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "referrer",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "traderNFTId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "baseSettlementFeePercentage",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSettlementFeePercentage",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "settlementFeePercentage",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "isReferralValid",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
@@ -847,25 +926,6 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "period",
-                "type": "uint256"
-            }
-        ],
-        "name": "isInCreationWindow",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [],
         "name": "isPaused",
         "outputs": [
@@ -887,12 +947,12 @@
             },
             {
                 "internalType": "uint256",
-                "name": "strike",
+                "name": "currentPrice",
                 "type": "uint256"
             },
             {
                 "internalType": "uint256",
-                "name": "expectedStrike",
+                "name": "strike",
                 "type": "uint256"
             }
         ],
@@ -993,11 +1053,6 @@
                 "type": "uint256"
             },
             {
-                "internalType": "bool",
-                "name": "isAbove",
-                "type": "bool"
-            },
-            {
                 "internalType": "uint256",
                 "name": "totalFee",
                 "type": "uint256"
@@ -1095,29 +1150,6 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "slippage",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "period",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "totalFee",
-                "type": "uint256"
-            }
-        ],
-        "name": "runInitialChecks",
-        "outputs": [],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "address",
                 "name": "from",
                 "type": "address"
@@ -1157,7 +1189,7 @@
             },
             {
                 "internalType": "bytes",
-                "name": "_data",
+                "name": "data",
                 "type": "bytes"
             }
         ],
@@ -1180,6 +1212,26 @@
             }
         ],
         "name": "setApprovalForAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8[4]",
+                "name": "_nftTierStep",
+                "type": "uint8[4]"
+            }
+        ],
+        "name": "setConfigure",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "setIsPaused",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -1231,9 +1283,28 @@
     },
     {
         "inputs": [],
-        "name": "toggleCreation",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "name": "token0",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "token1",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -1270,7 +1341,7 @@
     },
     {
         "inputs": [],
-        "name": "totalLockedAmount",
+        "name": "totalMarketOI",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -1313,8 +1384,18 @@
             },
             {
                 "internalType": "uint256",
-                "name": "priceAtExpiration",
+                "name": "closingPrice",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "closingTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "isAbove",
+                "type": "bool"
             }
         ],
         "name": "unlock",
