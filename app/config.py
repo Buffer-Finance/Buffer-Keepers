@@ -25,7 +25,7 @@ KEEPER_READER = {
 GRAPH_ENDPOINT = {
     "arb-sandbox": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/arbitrum-testnet/api",
     "arb-testnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/arbitrum-testnet/api",
-    "arb-mainnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/arbitrum-mainnet/api",
+    "arb-mainnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/sandbox-mainnet/api",
     "polygon-sandbox": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/polygon-testnet/api",
     "polygon-mainnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/polygon-mainnet/api",
     "polygon-testnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/polygon-testnet/api",
