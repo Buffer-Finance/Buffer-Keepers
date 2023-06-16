@@ -135,6 +135,7 @@ def update_db(environment):
 
 
 def open_orders(environment):
+    # open_limit_orders(environment)
     while True:
         # logger.info("ping")
         try:

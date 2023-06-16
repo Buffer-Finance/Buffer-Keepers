@@ -135,7 +135,7 @@ def get_asset_pair(option_contract_address, environment):
 
 
 def get_market_info(environment, order_by="-queued_timestamp"):
-    reqUrl = f"https://oracle.buffer-finance-api.link/instant-trading/trades/all_active/?environment={brownie.network.chain.id}&user_signature={keeper_signature()}&order_by={order_by}"
+    reqUrl = f"{config.BASE_URL}/trades/all_active/?environment={brownie.network.chain.id}&user_signature={keeper_signature()}&order_by={order_by}"
     r = requests.get(reqUrl)
     # logger.info(f"get_market_info: {reqUrl}")
     response = {}
@@ -160,7 +160,14 @@ def get_market_info(environment, order_by="-queued_timestamp"):
 
 
 def get_limit_orders(environment):
-    reqUrl = f"https://oracle.buffer-finance-api.link/instant-trading/trades/all_limit_orders/?environment={brownie.network.chain.id}&user_signature={keeper_signature()}"
+    reqUrl = f"{config.BASE_URL}/trades/all_limit_orders/?environment={brownie.network.chain.id}&user_signature={keeper_signature()}"
+    r = requests.get(reqUrl)
+    logger.info(f"get_market_info: {reqUrl} : {r.json()}")
+    return r.json()
+
+
+def get_sf(environment):
+    reqUrl = f"{config.BASE_URL}/settlement_fee/?environment={brownie.network.chain.id}"
     r = requests.get(reqUrl)
     logger.info(f"get_market_info: {reqUrl} : {r.json()}")
     return r.json()

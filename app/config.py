@@ -1,6 +1,6 @@
 ROUTER = {
-    "arb-sandbox": "0x12DAB5616fd779E7F902F6149cE26B506DF92B70",
-    "arb-testnet": "0x12DAB5616fd779E7F902F6149cE26B506DF92B70",
+    "arb-sandbox": "0xFD2Af6FB0EfBefBDA609fdF95761b9e635422F92",
+    "arb-testnet": "0xFD2Af6FB0EfBefBDA609fdF95761b9e635422F92",
     "arb-mainnet": "0x0e0A1241C9cE6649d5D30134a194BA3E24130305",
     "polygon-testnet": "0x3E8d70286567bf962261a81Da5DBDe6cBbc444C4",
     "polygon-mainnet": "0xBBac5088Ea7E70f21C28058A434Afa64FDf401c7",
@@ -14,14 +14,7 @@ MULTICALL = {
     "polygon-mainnet": "0xc8E51042792d7405184DfCa245F2d27B94D013b6",
 }
 
-KEEPER_READER = {
-    "arb-sandbox": "0x729e3F07B482883fE34CCDe71593494760F4Dd42",
-    "arb-testnet": "0x729e3F07B482883fE34CCDe71593494760F4Dd42",
-    "arb-mainnet": "0x222dA3977E4d876DB75b0Ef48B8148A2223c80Ed",
-    "polygon-testnet": "0x5e7a2524f8809fdf743acbc6fe642bb39216c3fd",
-    "polygon-mainnet": "0xF91E17072353200F7bA0b7cF8F644893680e7f90",
-}
-
+BASE_URL = "https://oracle.buffer-finance-api.link/instant-trading"
 GRAPH_ENDPOINT = {
     "arb-sandbox": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/instant-trading-arbitrum-testnet/api",
     "arb-testnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/instant-trading-arbitrum-testnet/api",

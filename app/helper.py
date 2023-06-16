@@ -19,6 +19,7 @@ from data import (
     get_option_to_expire,
     get_options_contract,
     get_router_contract,
+    get_sf,
     keeper_signature,
 )
 from eth_account import Account
@@ -139,7 +140,7 @@ def _unlock_options(expired_options, environment):
         | where(lambda x: _price(x).get("price"))
         | select(
             lambda x: (
-                x["queueId"],
+                # x["queueId"],
                 x["optionID"],
                 x["contractAddress"],
                 _price(x)["price"],  # price
@@ -189,7 +190,7 @@ def is_strike_valid(slippage, current_price, strike):
 
 
 def update_db_for_lo(payload, environment):
-    reqUrl = f"https://oracle.buffer-finance-api.link/instant-trading/trade/create/limit_order/?user_signature={keeper_signature()}&environment={brownie.network.chain.id}"
+    reqUrl = f"{config.BASE_URL}/trade/create/limit_order/?user_signature={keeper_signature()}&environment={brownie.network.chain.id}"
     logger.info(f"resolve_queued_trades_v2: {reqUrl}")
     r = requests.post(url=reqUrl, json=payload)
 
@@ -233,6 +234,11 @@ def open_limit_orders(environment):
         f"{target_option_contracts_mapping[x['contractAddress']]}-{current_time}",
         {},
     )
+    sf = get_sf(environment)
+    _sf = lambda x: sf.get(
+        f"{target_option_contracts_mapping[x['contractAddress']]}",
+        {},
+    )
 
     valid_orders = list(
         lo
@@ -240,7 +246,8 @@ def open_limit_orders(environment):
             lambda x: is_strike_valid(
                 x["slippage"], _price(x).get("price"), x["strike"]
             )
-        )  # TODO: add a check for expiry
+            and (x["limit_order_duration"] + x["queued_timestamp"]) > current_time
+        )
         | select(
             lambda x: (
                 x["queue_id"],  # queueId
@@ -254,12 +261,12 @@ def open_limit_orders(environment):
                 x["referral_code"],
                 x["trader_nft_id"],
                 _price(x)["price"],  # price,
-                x["settlement_fee"],
+                _sf(x)["settlement_fee"],
                 x["is_limit_order"],
-                current_time + 300,  # TODO : fix
+                x["limit_order_duration"] + x["queued_timestamp"],
                 [
-                    x["settlement_fee_signature"],
-                    x["settlement_fee_sign_expiration"],
+                    _sf(x)["settlement_fee_signature"],
+                    _sf(x)["settlement_fee_sign_expiration"],
                 ],  # signature,
                 [x["user_partial_signature"], x["signature_timestamp"]],
                 [_price(x)["signature"], current_time],  # signature
@@ -291,6 +298,24 @@ def open_limit_orders(environment):
 
         queue_ids = [x[0] for x in valid_orders]
         update_db_for_lo(queue_ids, environment)
+
+    invalid_orders = list(
+        lo
+        | where(
+            lambda x: (x["limit_order_duration"] + x["queued_timestamp"]) < current_time
+        )
+        | select(lambda x: x["queue_id"])  # queueId
+    )
+    if invalid_orders:
+        logger.info(f"invalid_orders : {_(invalid_orders)}")
+        cancel_trades(invalid_orders, environment)
+
+
+def cancel_trades(payload, environment):
+    reqUrl = f"{config.BASE_URL}/trades/cancel/?user_signature={keeper_signature()}&user_address={open_keeper_account}&environment={brownie.network.chain.id}"
+    logger.info(f"resolve_queued_trades_v2: {reqUrl}")
+    r = requests.post(url=reqUrl, json=payload)
+    print(reqUrl, r.json())
 
 
 def unlock_options_v2(environment):
@@ -335,7 +360,7 @@ def update_db_after_unlock(environment):
 
 
 def update_db(payload):
-    reqUrl = f"https://oracle.buffer-finance-api.link/instant-trading/trade/unlock/?user_signature={keeper_signature()}&environment={brownie.network.chain.id}"
+    reqUrl = f"{config.BASE_URL}/trade/unlock/?user_signature={keeper_signature()}&environment={brownie.network.chain.id}"
     logger.info(f"resolve_queued_trades_v2: {reqUrl}")
     r = requests.post(url=reqUrl, json=payload)
     print(reqUrl, r.json())

@@ -298,11 +298,6 @@
                         "components": [
                             {
                                 "internalType": "uint256",
-                                "name": "queueId",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint256",
                                 "name": "optionId",
                                 "type": "uint256"
                             },
@@ -418,11 +413,6 @@
         "inputs": [
             {
                 "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "queueId",
-                        "type": "uint256"
-                    },
                     {
                         "internalType": "uint256",
                         "name": "optionId",
