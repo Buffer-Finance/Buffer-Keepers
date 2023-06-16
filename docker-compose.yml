@@ -1,21 +1,6 @@
 version: "3.5"
 
 services:
-    # lo_keeper:
-    #     build: .
-    #     image: &app app
-    #     restart: always
-    #     env_file: &envfile
-    #         - .env
-    #     command: bash -c "python -u network_load.py && python -u keeper.py --bot open_limit_order"
-    #     volumes:
-    #         - ./app:/home/app/web
-    #     logging:
-    #         driver: "json-file"
-    #         options:
-    #             max-size: "10m"
-    #             max-file: "3"
-
     close_keeper:
         build: .
         image: &app app
@@ -37,6 +22,20 @@ services:
         restart: always
         env_file: *envfile
         command: bash -c "python -u network_load.py && python -u keeper.py --bot update"
+        volumes:
+            - ./app:/home/app/web
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "3"
+
+    lo_keeper:
+        build: .
+        image: *app
+        restart: always
+        env_file: *envfile
+        command: bash -c "python -u network_load.py && python -u keeper.py --bot open_limit_order"
         volumes:
             - ./app:/home/app/web
         logging:
