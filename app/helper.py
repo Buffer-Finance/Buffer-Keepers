@@ -216,7 +216,7 @@ def open_limit_orders(environment):
     if not lo:
         return
 
-    current_time = int(time.time()) - 1
+    current_time = int(time.time()) - 5
     prices_to_fetch = list(
         target_option_contracts_mapping
         | select(
