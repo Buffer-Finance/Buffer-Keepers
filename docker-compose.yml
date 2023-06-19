@@ -30,19 +30,19 @@ services:
                 max-size: "10m"
                 max-file: "3"
 
-    lo_keeper:
-        build: .
-        image: *app
-        restart: always
-        env_file: *envfile
-        command: bash -c "python -u network_load.py && python -u keeper.py --bot open_limit_order"
-        volumes:
-            - ./app:/home/app/web
-        logging:
-            driver: "json-file"
-            options:
-                max-size: "10m"
-                max-file: "3"
+    # lo_keeper:
+    #     build: .
+    #     image: *app
+    #     restart: always
+    #     env_file: *envfile
+    #     command: bash -c "python -u network_load.py && python -u keeper.py --bot open_limit_order"
+    #     volumes:
+    #         - ./app:/home/app/web
+    #     logging:
+    #         driver: "json-file"
+    #         options:
+    #             max-size: "10m"
+    #             max-file: "3"
 
     # open_keeper:
     #     build: .
