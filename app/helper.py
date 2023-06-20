@@ -349,7 +349,7 @@ def update_db_after_unlock(environment):
                 "queue_id": int(x[1]),
                 "payout": int(x[0]["payout"]) if x[0]["payout"] else 0,
                 "expiry_price": int(x[0]["expirationPrice"]),
-                "close_time": int(x[0]["expirationTime"]),
+                "close_time": int(x[0]["closeTime"]),
             }
         )
     )

@@ -144,6 +144,7 @@ def get_market_info(environment, order_by="-queued_timestamp"):
             {
                 market["queue_id"]: {
                     "queue_id": market["queue_id"],
+                    "queued_timestamp": market["queued_timestamp"],
                     "state": market["state"],
                     "is_above": market["is_above"],
                     "sign_info": (
@@ -176,17 +177,17 @@ def get_sf(environment):
 def get_expired_options(environment):
     limit = 1000
     db_data = get_market_info(environment, order_by="expiration_time")
-    db_data = dict(
-        db_data
-        | where(lambda x: db_data[x]["expiration_time"] <= int(time.time()))
-        | select(lambda x: (x, db_data[x]))
-    )
+    # db_data = dict(
+    #     db_data
+    #     # | where(lambda x: (db_data[x]["expiration_time"] <= int(time.time(), )))
+    #     | select(lambda x: (x, db_data[x]))
+    # )
 
     if not db_data:
         return [], []
     logger.info(f"db_data: {db_data}")
 
-    min_timestamp = min([db_data[x]["expiration_time"] for x in db_data])
+    min_timestamp = min([db_data[x]["queued_timestamp"] for x in db_data])
     json_data = {
         "query": "query UserOptionHistgry($minTimestamp: BigInt = "
         + str(min_timestamp)
