@@ -174,7 +174,7 @@ def update_oneCT_accounts(environment):
             else:
                 logger.exception(e)
             time.sleep(int(os.environ["WAIT_TIME"]))
-        time.sleep(600)
+        time.sleep(int(os.environ["DELAY"]))
 
 
 def cancel(environment):

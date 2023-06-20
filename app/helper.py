@@ -385,7 +385,9 @@ def get_oneCT_accounts_from_graph(json_data, endpoint):
 
 def get_one_ct_accounts(environment):
     limit = 10000
-    min_timestamp = int(time.time()) - 86400
+    min_timestamp = cache.get("min_timestamp")
+    if not min_timestamp:
+        min_timestamp = int(time.time()) - (2 * 60)
     json_data = {
         "query": "query eoaToOneCT($minTimestamp: BigInt = "
         + str(min_timestamp)
@@ -407,12 +409,14 @@ def get_one_ct_accounts(environment):
     except Exception as e:
         logger.info(f"Error fetching from theGraph {e}")
         time.sleep(5)
-    return graph_data
+    return graph_data, graph_data[0].get("updatedAt") if graph_data else None
 
 
 def update_db_with_one_ct_accounts(environment):
     logger.info(f"{mp.current_process().name} {datetime.now()}")
-    graph_data = get_one_ct_accounts(environment)
+    graph_data, min_timestamp = get_one_ct_accounts(environment)
+    if min_timestamp:
+        cache.set("min_timestamp", min_timestamp)
     if not graph_data:
         return
     for data in graph_data:
