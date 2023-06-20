@@ -15,7 +15,13 @@ from brownie import Contract, accounts, network
 from config import MULTICALL
 
 # from keeper_helper import resolve_queued_trades_v1, unlock_options_v1
-from helper import open_limit_orders, unlock_options_v2, update_db_after_unlock
+from helper import (
+    get_one_ct_accounts,
+    open_limit_orders,
+    unlock_options_v2,
+    update_db_after_unlock,
+    update_db_with_one_ct_accounts,
+)
 from pipe import chain, dedup, select, where
 
 logger = logging.getLogger(__name__)
@@ -156,6 +162,21 @@ def open_orders(environment):
         time.sleep(int(os.environ["DELAY"]))
 
 
+def update_oneCT_accounts(environment):
+    while True:
+        try:
+            update_db_with_one_ct_accounts(environment)
+        except Exception as e:
+            if "429" in str(e):
+                logger.info("Handled rpc error")
+            elif "unsupported block number" in str(e):
+                logger.info(f"Handled rpc error {e}")
+            else:
+                logger.exception(e)
+            time.sleep(int(os.environ["WAIT_TIME"]))
+        time.sleep(600)
+
+
 def cancel(environment):
     pass
 
@@ -177,6 +198,9 @@ if __name__ == "__main__":
 
     elif args.bot == "open_limit_order":
         create_process(open_orders, "OpenLimitOrderTask-1")
+
+    elif args.bot == "update_oneCT_accounts":
+        create_process(update_oneCT_accounts, "UpdateOneCTAccounts-1")
 
     # elif args.bot == "cancel":
     #     create_process(cancel, "CancelTask-1")

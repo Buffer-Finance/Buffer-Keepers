@@ -364,3 +364,56 @@ def update_db(payload):
     logger.info(f"resolve_queued_trades_v2: {reqUrl}")
     r = requests.post(url=reqUrl, json=payload)
     print(reqUrl, r.json())
+
+
+def update_one_ct(oneCT, user_address, updated_at):
+    reqUrl = f"{config.BASE_URL}/create_one_ct/?user_signature={keeper_signature()}&one_ct={oneCT}&account={user_address}&updated_at={updated_at}&environment={brownie.network.chain.id}"
+    logger.info(f"update_one_ct: {reqUrl}")
+    r = requests.post(url=reqUrl, json={})
+
+
+def get_oneCT_accounts_from_graph(json_data, endpoint):
+    response = requests.post(
+        endpoint,
+        json=json_data,
+    )
+    response.raise_for_status()
+    return list(
+        response.json()["data"]["eoatoOneCTs"]
+    )  # List[{optionId, contractAddress, expirationTime}]
+
+
+def get_one_ct_accounts(environment):
+    limit = 10000
+    min_timestamp = int(time.time()) - 86400
+    json_data = {
+        "query": "query eoaToOneCT($minTimestamp: BigInt = "
+        + str(min_timestamp)
+        + ") {\n  eoatoOneCTs(\n    orderBy: updatedAt\n    orderDirection: desc\n    where: {updatedAt_gte: $minTimestamp}\n    first: "
+        + str(limit)
+        + " ) {\n    eoa\n oneCT\n updatedAt\n}\n}",
+        "variables": None,
+        "operationName": "eoaToOneCT",
+        "extensions": {
+            "headers": None,
+        },
+    }
+    # Fetch from theGraph
+    graph_data = []
+    try:
+        graph_data = get_oneCT_accounts_from_graph(
+            json_data, config.GRAPH_ENDPOINT[environment]
+        )  # List[{optionID, contractAddress, expirationTime}]
+    except Exception as e:
+        logger.info(f"Error fetching from theGraph {e}")
+        time.sleep(5)
+    return graph_data
+
+
+def update_db_with_one_ct_accounts(environment):
+    logger.info(f"{mp.current_process().name} {datetime.now()}")
+    graph_data = get_one_ct_accounts(environment)
+    if not graph_data:
+        return
+    for data in graph_data:
+        update_one_ct(data["oneCT"], data["eoa"], data["updatedAt"])
