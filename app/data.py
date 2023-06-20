@@ -193,7 +193,7 @@ def get_expired_options(environment):
         + str(min_timestamp)
         + ") {\n  userOptionDatas(\n    orderBy: creationTime\n    orderDirection: asc\n    where: {state_in: [2,3], expirationTime_gte: $minTimestamp}\n    first: "
         + str(limit)
-        + " ) {\n    optionID\n queueID\n payout\n  expirationPrice\n  optionContract {address} \n  expirationTime\n }\n}",
+        + " ) {\n    optionID\n queueID\n payout\n  expirationPrice\n closeTime\n  optionContract {address} \n  expirationTime\n }\n}",
         "variables": None,
         "operationName": "UserOptionHistory",
         "extensions": {
