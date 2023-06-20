@@ -1,6 +1,6 @@
 ROUTER = {
-    "arb-sandbox": "0xa47278Ade7a436C161cF406a46741e0ADFf65114",
-    "arb-testnet": "0xa47278Ade7a436C161cF406a46741e0ADFf65114",
+    "arb-sandbox": "0x721B0485fC4e86e5CAfa25Be6F182754Ed55f9C5",
+    "arb-testnet": "0x721B0485fC4e86e5CAfa25Be6F182754Ed55f9C5",
     "arb-mainnet": "0x0e0A1241C9cE6649d5D30134a194BA3E24130305",
     "polygon-testnet": "0x3E8d70286567bf962261a81Da5DBDe6cBbc444C4",
     "polygon-mainnet": "0xBBac5088Ea7E70f21C28058A434Afa64FDf401c7",
