@@ -167,10 +167,17 @@ def get_limit_orders(environment):
     return r.json()
 
 
+def get_queued_trades(environment):
+    reqUrl = f"{config.BASE_URL}/trades/all_pending/?environment={brownie.network.chain.id}&user_signature={keeper_signature()}"
+    r = requests.get(reqUrl)
+    logger.info(f"all_pending: {reqUrl} : {r.json()}")
+    return r.json()
+
+
 def get_sf(environment):
     reqUrl = f"{config.BASE_URL}/settlement_fee/?environment={brownie.network.chain.id}"
     r = requests.get(reqUrl)
-    logger.info(f"get_market_info: {reqUrl} : {r.json()}")
+    # logger.info(f"get_market_info: {reqUrl} : {r.json()}")
     return r.json()
 
 

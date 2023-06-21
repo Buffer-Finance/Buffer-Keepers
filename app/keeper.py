@@ -17,7 +17,7 @@ from config import MULTICALL
 # from keeper_helper import resolve_queued_trades_v1, unlock_options_v1
 from helper import (
     get_one_ct_accounts,
-    open_limit_orders,
+    open,
     unlock_options_v2,
     update_db_after_unlock,
     update_db_with_one_ct_accounts,
@@ -75,24 +75,24 @@ threading.excepthook = excepthook
 
 
 def open_v2(environment):
-    pass
-    # while True:
-    # try:
-    # resolve_queued_trades_v2(environment)
-    # except Exception as e:
-    #     if "429" in str(e):
-    #         logger.info(f"Handled rpc error {e}")
-    #     elif "unsupported block number" in str(e):
-    #         logger.info(f"Handled rpc error {e}")
-    #     elif "oracle.buffer-finance-api.link" in str(e):
-    #         logger.exception(e)
-    #     else:
-    #         # logger.exception(e)
-    #         switch_network()
-    #         logger.info(f"connected {network.show_active()}")
 
-    #     time.sleep(int(os.environ["WAIT_TIME"]))
-    # time.sleep(int(os.environ["DELAY"]))
+    while True:
+        try:
+            open(environment)
+        except Exception as e:
+            if "429" in str(e):
+                logger.info(f"Handled rpc error {e}")
+            elif "unsupported block number" in str(e):
+                logger.info(f"Handled rpc error {e}")
+            elif "oracle.buffer-finance-api.link" in str(e):
+                logger.exception(e)
+            else:
+                # logger.exception(e)
+                switch_network()
+                logger.info(f"connected {network.show_active()}")
+
+            time.sleep(int(os.environ["WAIT_TIME"]))
+        time.sleep(int(os.environ["DELAY"]))
 
 
 def close_v2(environment):
@@ -140,28 +140,6 @@ def update_db(environment):
         time.sleep(int(os.environ["DELAY"]))
 
 
-def open_orders(environment):
-    # open_limit_orders(environment)
-    while True:
-        # logger.info("ping")
-        try:
-            open_limit_orders(environment)
-        except Exception as e:
-            if "429" in str(e):
-                logger.info("Handled rpc error")
-            elif "unsupported block number" in str(e):
-                logger.info(f"Handled rpc error {e}")
-            # elif "oracle.buffer-finance-api.link" in str(e):
-            #     logger.exception(e)
-            else:
-                logger.exception(e)
-                # switch_network()
-                # logger.info(f"connected {network.show_active()}")
-
-            time.sleep(int(os.environ["WAIT_TIME"]))
-        time.sleep(int(os.environ["DELAY"]))
-
-
 def update_oneCT_accounts(environment):
     while True:
         try:
@@ -193,11 +171,8 @@ if __name__ == "__main__":
     elif args.bot == "update":
         create_process(update_db, "UpdateTask-1")
 
-    # elif args.bot == "open":
-    #     create_process(open_v2, "OpenTask-1")
-
-    elif args.bot == "open_limit_order":
-        create_process(open_orders, "OpenLimitOrderTask-1")
+    elif args.bot == "open":
+        create_process(open_v2, "OpenTask-1")
 
     elif args.bot == "update_oneCT_accounts":
         create_process(update_oneCT_accounts, "UpdateOneCTAccounts-1")

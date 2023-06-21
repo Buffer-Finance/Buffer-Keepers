@@ -18,6 +18,7 @@ from data import (
     get_market_info,
     get_option_to_expire,
     get_options_contract,
+    get_queued_trades,
     get_router_contract,
     get_sf,
     keeper_signature,
@@ -33,7 +34,7 @@ logging.basicConfig(level=logging.INFO)
 
 open_keeper_account = accounts.add(os.environ["OPEN_KEEPER_ACCOUNT_PK"])
 close_keeper_account = accounts.add(os.environ["CLOSE_KEEPER_ACCOUNT_PK"])
-
+ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 MAX_BATCH_SIZE = 100
 
 
@@ -189,17 +190,19 @@ def is_strike_valid(slippage, current_price, strike):
         return False
 
 
-def update_db_for_lo(payload, environment):
-    reqUrl = f"{config.BASE_URL}/trade/create/limit_order/?user_signature={keeper_signature()}&environment={brownie.network.chain.id}"
+def update_db_after_creation(payload, environment):
+    reqUrl = f"{config.BASE_URL}/trade/update/?user_signature={keeper_signature()}&environment={brownie.network.chain.id}"
     logger.info(f"resolve_queued_trades_v2: {reqUrl}")
     r = requests.post(url=reqUrl, json=payload)
 
 
-def open_limit_orders(environment):
+def open(environment):
     logger.info(f"{mp.current_process().name} {datetime.now()}")
-    lo = get_limit_orders(environment)
-    lo = list(
-        lo
+    current_time = int(time.time())
+
+    pending_trades = get_queued_trades(environment)
+    pending_trades = list(
+        pending_trades
         | select(
             lambda x: {
                 **x,
@@ -207,22 +210,52 @@ def open_limit_orders(environment):
             }
         )
     )
-    if not lo:
-        return
-    # Filter out the ones for invalid pairs
-    target_option_contracts_mapping = get_target_contract_mapping(lo, environment)
-    # Take the initial 100
-    lo = lo[:MAX_BATCH_SIZE]
-    if not lo:
+
+    if not pending_trades:
         return
 
-    current_time = int(time.time())
+    pending_trades = pending_trades[:MAX_BATCH_SIZE]
+    router_contract = get_router_contract(config.ROUTER[environment])
+    brownie.multicall(address=config.MULTICALL[environment])
+    with brownie.multicall:
+        # Confirm if these options are still active by using RPC calls
+        pending_trades = list(
+            pending_trades
+            | select(
+                lambda x: (
+                    x,
+                    router_contract.queuedTrades(x["queue_id"]),
+                )
+            )
+        )
+
+        pending_trades = list(
+            pending_trades
+            | where(lambda x: x[1][0] == ZERO_ADDRESS)
+            | select(lambda x: x[0])
+        )
+
+    if not pending_trades:
+        return
+
+    # Take the initial 100
+    # Filter out the ones for invalid pairs
+    target_option_contracts_mapping = get_target_contract_mapping(
+        pending_trades, environment
+    )
+    _time = lambda x: current_time if x["is_limit_order"] else x["queued_timestamp"]
+
     prices_to_fetch = list(
-        target_option_contracts_mapping
+        pending_trades
+        | select(
+            lambda x: f"{target_option_contracts_mapping[x['contractAddress']]}%{_time(x)}",
+        )
+        | dedup
+        | select(lambda x: x.split("%"))
         | select(
             lambda x: {
-                "pair": target_option_contracts_mapping[x],
-                "timestamp": current_time,
+                "pair": x[0],
+                "timestamp": x[1],
             }
         )
     )  # List[(assetPair, timestamp)]
@@ -231,7 +264,7 @@ def open_limit_orders(environment):
     fetched_prices_mapping = fetch_prices(prices_to_fetch)
     logger.info(f"fetched_prices_mapping: {(fetched_prices_mapping)}")
     _price = lambda x: fetched_prices_mapping.get(
-        f"{target_option_contracts_mapping[x['contractAddress']]}-{current_time}",
+        f"{target_option_contracts_mapping[x['contractAddress']]}-{_time(x)}",
         {},
     )
     sf = get_sf(environment)
@@ -239,14 +272,22 @@ def open_limit_orders(environment):
         f"{target_option_contracts_mapping[x['contractAddress']]}",
         {},
     )
-
     valid_orders = list(
-        lo
+        pending_trades
+        | where(lambda x: _price(x).get("price"))
         | where(
             lambda x: is_strike_valid(
                 x["slippage"], _price(x).get("price"), x["strike"]
             )
-            and (x["limit_order_duration"] + x["queued_timestamp"]) > current_time
+        )
+        | where(
+            lambda x: (
+                (
+                    not x["is_limit_order"]
+                    and (x["queued_timestamp"] > (current_time - 60))
+                )
+                or (x["is_limit_order"] and x["limit_order_expiration"] > current_time)
+            )
         )
         | select(
             lambda x: (
@@ -261,19 +302,30 @@ def open_limit_orders(environment):
                 x["referral_code"],
                 x["trader_nft_id"],
                 _price(x)["price"],  # price,
-                _sf(x)["settlement_fee"],
+                _sf(x)["settlement_fee"]
+                if x["is_limit_order"]
+                else x["settlement_fee"],
                 x["is_limit_order"],
-                x["limit_order_duration"] + x["queued_timestamp"],
+                (x["limit_order_expiration"]) if x["is_limit_order"] else 0,
                 [
                     _sf(x)["settlement_fee_signature"],
                     _sf(x)["settlement_fee_sign_expiration"],
+                ]
+                if x["is_limit_order"]
+                else [
+                    x["settlement_fee_signature"],
+                    x["settlement_fee_sign_expiration"],
                 ],  # signature,
                 [x["user_partial_signature"], x["signature_timestamp"]],
-                [_price(x)["signature"], current_time],  # signature
+                [
+                    _price(x)["signature"],
+                    _time(x),
+                ],  # signature
             )
         )
     )
 
+    valid_queue_ids = [x[0] for x in valid_orders]
     if valid_orders:
         logger.info(f"valid_orders : {_(valid_orders)}")
         router_contract = get_router_contract(config.ROUTER[environment])
@@ -296,13 +348,19 @@ def open_limit_orders(environment):
             else:
                 logger.exception(e)
 
-        queue_ids = [x[0] for x in valid_orders]
-        update_db_for_lo(queue_ids, environment)
+        update_db_after_creation(valid_queue_ids, environment)
 
     invalid_orders = list(
-        lo
+        pending_trades
         | where(
-            lambda x: (x["limit_order_duration"] + x["queued_timestamp"]) < current_time
+            lambda x: x["queue_id"] not in valid_queue_ids
+            and (
+                (
+                    not x["is_limit_order"]
+                    and (x["queued_timestamp"] < (current_time - 60))
+                )
+                or (x["is_limit_order"] and x["limit_order_expiration"] < current_time)
+            )
         )
         | select(lambda x: x["queue_id"])  # queueId
     )
