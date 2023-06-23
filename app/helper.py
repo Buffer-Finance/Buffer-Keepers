@@ -180,7 +180,7 @@ def _unlock_options(expired_options, environment):
                 {**params, "gas_limit": gas},
             )
             # TODO fix this later
-            if r.events["FailUnlock"]:
+            if r.events.get("FailUnlock"):
                 wrong_ids = [x["optionId"] for x in r.events["FailUnlock"]]
                 invalid_option_ids += wrong_ids
                 cache.set("wrong_ids", invalid_option_ids)
