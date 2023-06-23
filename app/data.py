@@ -192,7 +192,7 @@ def get_expired_options(environment):
 
     if not db_data:
         return [], []
-    logger.info(f"db_data: {db_data}")
+    # logger.info(f"db_data: {db_data}")
 
     min_timestamp = min([db_data[x]["queued_timestamp"] for x in db_data])
     json_data = {
