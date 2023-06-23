@@ -100,6 +100,9 @@ def _unlock_options(expired_options, environment):
     invalid_option_ids = cache.get("wrong_ids")
     logger.info(f"invalid_option_ids: {invalid_option_ids}")
 
+    if not invalid_option_ids:
+        invalid_option_ids = []
+
     expired_options = list(
         expired_options
         | where(lambda x: x[1][0] == 1 and market_info.get(x[2]))
