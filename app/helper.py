@@ -97,9 +97,13 @@ def _unlock_options(expired_options, environment):
     expired_options = list(zip(expired_options, option_details, queue_ids))
     market_info = get_market_info(environment)
 
+    invalid_option_ids = cache.get("wrong_ids")
+    logger.info(f"invalid_option_ids: {invalid_option_ids}")
+
     expired_options = list(
         expired_options
         | where(lambda x: x[1][0] == 1 and market_info.get(x[2]))
+        | where(lambda x: x[0]["optionID"] not in invalid_option_ids)
         | select(
             lambda x: {
                 "contractAddress": x[0]["contractAddress"],
@@ -135,7 +139,6 @@ def _unlock_options(expired_options, environment):
         f"{target_option_contracts_mapping[x['contractAddress']]}-{x['expirationTime']}",
         {},
     )
-
     unlock_payload = list(
         expired_options
         | where(lambda x: _price(x).get("price"))
@@ -169,10 +172,16 @@ def _unlock_options(expired_options, environment):
 
         logger.info(f"Transacting at {gas} gas units...")
         try:
-            router.executeOptions(
+            r = router.executeOptions(
                 unlock_payload,
                 {**params, "gas_limit": gas},
             )
+            # TODO fix this later
+            if r.events["FailUnlock"]:
+                wrong_ids = [x["optionId"] for x in r.events["FailUnlock"]]
+                invalid_option_ids += wrong_ids
+                cache.set("wrong_ids", invalid_option_ids)
+
             check_wallet(close_keeper_account)
         except Exception as e:
             if "nonce too low" in str(e):

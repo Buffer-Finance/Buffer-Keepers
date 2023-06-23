@@ -137,7 +137,7 @@ def get_asset_pair(option_contract_address, environment):
 def get_market_info(environment, order_by="-queued_timestamp"):
     reqUrl = f"{config.BASE_URL}/trades/all_active/?environment={brownie.network.chain.id}&user_signature={keeper_signature()}&order_by={order_by}"
     r = requests.get(reqUrl)
-    # logger.info(f"get_market_info: {reqUrl}")
+
     response = {}
     for market in r.json():
         response.update(
