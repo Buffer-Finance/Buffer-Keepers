@@ -226,7 +226,7 @@ def get_expired_options(environment):
             }
         )
     )
-    logger.info(f"graph_data: {graph_data}")
+    # logger.info(f"graph_data: {graph_data}")
     return graph_data, db_data
 
 
@@ -264,7 +264,7 @@ def get_option_to_expire(environment):
             }
         )
     )
-    logger.info(f"expired_options: {expired_options}")
+    # logger.info(f"expired_options: {expired_options}")
     return expired_options
 
 
