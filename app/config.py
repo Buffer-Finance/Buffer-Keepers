@@ -14,7 +14,7 @@ MULTICALL = {
     "polygon-mainnet": "0xc8E51042792d7405184DfCa245F2d27B94D013b6",
 }
 
-BASE_URL = "https://oracle.buffer-finance-api.link/instant-trading"
+BASE_URL = "https://backend.buffer-finance-api.link/instant-trading"
 GRAPH_ENDPOINT = {
     "arb-sandbox": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/instant-trading-arbitrum-testnet/api",
     "arb-testnet": "https://subgraph.satsuma-prod.com/e66b06ce96d2/bufferfinance/instant-trading-arbitrum-testnet/api",
