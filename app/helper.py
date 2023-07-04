@@ -307,9 +307,31 @@ def _resolve_queued_trades(_queue_ids, environment):
     keeper_reader = get_keeper_reader_contract(config.KEEPER_READER[environment])
     logger.debug(f"keeper_reader: {keeper_reader}")
 
-    queue_ids = queue_ids[:MAX_BATCH_SIZE]
-    # TODO: Need to handle the case where the queue is too long
-    unresolved_trades = keeper_reader.retrieveTrades(queue_ids, MAX_BATCH_SIZE)
+    logger.info(f"Retrieving {len(queue_ids)} trades from the keeper reader...")
+    if len(queue_ids) > MAX_BATCH_SIZE:
+        queue_ids = queue_ids[:MAX_BATCH_SIZE]
+        # TODO: Need to handle the case where the queue is too long
+        # unresolved_trades = keeper_reader.retrieveTrades(queue_ids, MAX_BATCH_SIZE)
+        router_contract = get_router_contract(config.ROUTER[environment])
+        brownie.multicall(address=config.MULTICALL[environment])
+        with brownie.multicall:
+            # Confirm if these options are still active by using RPC calls
+            unresolved_trades = list(
+                queue_ids
+                | select(
+                    lambda x: (
+                        x,
+                        router_contract.queuedTrades(x),
+                    )
+                )
+                | select(
+                    lambda x: (
+                        x[0],
+                        x[1][6],
+                        x[1][10]))
+            )
+    else:
+        unresolved_trades = keeper_reader.retrieveTrades(queue_ids, MAX_BATCH_SIZE)
 
     logger.debug(f"{len(unresolved_trades)} unresolved_trades")
 
@@ -399,7 +421,7 @@ def _resolve_queued_trades(_queue_ids, environment):
 def resolve_queued_trades_v2(environment):
     logger.info(f"{mp.current_process().name} {datetime.now()}")
     json_data = {
-        "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: desc\n    where: {state_in: [4, 5, 6]}\n  first: 1000\n) {\n    queueID\n  state\n}\n}",
+        "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: desc\n    where: {state_in: [4]}\n  first: 1000\n) {\n    queueID\n  state\n}\n}",
         "variables": None,
         "operationName": "MyQuery",
         "extensions": {
