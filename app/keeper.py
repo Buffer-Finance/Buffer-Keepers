@@ -70,7 +70,7 @@ threading.excepthook = excepthook
 def open_v2(environment):
     while True:
         try:
-            logger.exception('Test error')
+            logger.exception('Testt error')
 
             resolve_queued_trades_v2(environment)
         except Exception as e:
