@@ -13,7 +13,6 @@ import monitor
 import requests
 from brownie import Contract, accounts, network
 from config import MULTICALL
-
 # from keeper_helper import resolve_queued_trades_v1, unlock_options_v1
 from helper import resolve_queued_trades_v2, unlock_options_v2
 from pipe import chain, dedup, select, where
@@ -71,6 +70,8 @@ threading.excepthook = excepthook
 def open_v2(environment):
     while True:
         try:
+            logger.exception('Test error')
+
             resolve_queued_trades_v2(environment)
         except Exception as e:
             if "429" in str(e):
