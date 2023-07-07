@@ -399,7 +399,7 @@ def _resolve_queued_trades(_queue_ids, environment):
 def resolve_queued_trades_v2(environment):
     logger.info(f"{mp.current_process().name} {datetime.now()}")
     json_data = {
-        "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: desc\n    where: {state_in: [4, 5, 6]}\n  first: 1000\n) {\n    queueID\n  state\n}\n}",
+        "query": "query MyQuery {\n  queuedOptionDatas(\n    orderBy: queueID\n    orderDirection: asc\n    where: {state_in: [4]}\n  first: 1000\n) {\n    queueID\n  state\n}\n}",
         "variables": None,
         "operationName": "MyQuery",
         "extensions": {
