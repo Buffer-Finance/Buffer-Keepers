@@ -21,7 +21,7 @@ logging.basicConfig(level=logging.INFO)
 open_keeper_account = accounts.add(os.environ["OPEN_KEEPER_ACCOUNT_PK"])
 close_keeper_account = accounts.add(os.environ["CLOSE_KEEPER_ACCOUNT_PK"])
 
-MAX_BATCH_SIZE = 100
+MAX_BATCH_SIZE = 50
 
 
 def get_queue_ids_from_graph(json_data, endpoint):
