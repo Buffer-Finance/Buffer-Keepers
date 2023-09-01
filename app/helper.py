@@ -447,6 +447,11 @@ def unlock_options_v2(environment):
         )  # List[{optionID, contractAddress, expirationTime}]
     except Exception as e:
         logger.info(f"Error fetching from theGraph")
+        print(e)
+        # print traceback.format_exc()
+        import traceback
+
+        print(traceback.format_exc())
         time.sleep(5)
 
     expired_options = list(
